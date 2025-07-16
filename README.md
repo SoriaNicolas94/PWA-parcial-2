@@ -1,69 +1,39 @@
-# React + TypeScript + Vite
+# Parcial PWA Nro 2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el TP 2 de programacion web avanzada, consiste en el frontend de una web, el cual conecta con el backend realizado en el primer parcial, el cual dejo el link al repositorio a continuacion
 
-Currently, two official plugins are available:
+Link a parcial 1: https://github.com/SoriaNicolas94/Parcial-I-PWA
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+el paso a paso para iniciar el servidor empieza iniciando el servidor de backend, cuya informacion esta en el repositorio del link mencionado anteriormente
 
-## Expanding the ESLint configuration
+para el frontend se debe iniciar la consola e instalar los paquetes necesarios:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+npm:
+npm install
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+axios:
+npm install axios
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+joi :
+npm install joi
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+@hookform/resolvers:
+npm install @hookform/resolvers
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+react hook form:
+npm install react-hook-form
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+react router:
+npm install react-router-dom
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+hook resolvers
+npm install @hookform-resolvers
+
+luego se inicia el servidor con el siguiente comando:
+
+    npm run dev
+
+    al iniciar te da el link de la web, donde se puede ingresar y probar las funcionalidades del programa
+
+
+a disfrutar!

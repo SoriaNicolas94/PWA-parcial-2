@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function Register() {
-  // Estados para los inputs del formulario
-  const [username, setUsername] = useState('');
+export default function Register() {
+  
+  const [name, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const navigate = useNavigate(); // para redireccionar luego del registro
+  const navigate = useNavigate(); 
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,21 +14,18 @@ function Register() {
     try {
       // Llamada POST al backend para crear el usuario
       const response = await axios.post('http://localhost:5000/users', {
-        username,
+        name,
         email,
       });
 
-      const user = response.data;
+      const user = {
+        id: response.data.data._id,     
+        name: response.data.data.name,  
+        email: response.data.data.email 
+      };
 
       // Guardar en localStorage el usuario registrado
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          id: user._id,
-          username: user.username,
-          email: user.email,
-        })
-      );
+       localStorage.setItem('user', JSON.stringify(user));
 
       // Redirigir a la pantalla de posts
       navigate('/posts');
@@ -45,7 +42,7 @@ function Register() {
       <input
         type="text"
         placeholder="Nombre de usuario"
-        value={username}
+        value={name}
         onChange={(e) => setUsername(e.target.value)}
         required
       /><br /><br />
@@ -63,4 +60,3 @@ function Register() {
   );
 }
 
-export default Register;

@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface Post {
   _id: string;
   title: string;
   content: string;
-  author: string;
-  likes: string[]; // IDs de usuarios que dieron like
+  author: { _id: string; name?: string; email?: string } | string;
+  likes: ({ _id: string } | string)[]; // IDs de usuarios que dieron like
 }
+
 
 export default function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const navigate = useNavigate();
+
 
   // Obtener usuario del localStorage
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -20,8 +24,8 @@ export default function Posts() {
   // Cargar posts desde el backend
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/posts');
-      setPosts(res.data);
+      const response = await axios.get('http://localhost:5000/posts');
+      setPosts(response.data.data); // Asegúrate de que la respuesta tenga una propiedad 'data' con los posts
     } catch (err) {
       console.error('Error al obtener posts:', err);
     }
@@ -43,7 +47,7 @@ export default function Posts() {
       await axios.post('http://localhost:5000/posts', {
         title,
         content,
-        author: user.username,
+        authorId: user.id, // Asegúrate de que el usuario tenga un ID
       });
       setTitle('');
       setContent('');
@@ -55,19 +59,22 @@ export default function Posts() {
   };
 
   // Dar like a un post
-  const handleLike = async (postId: string) => {
-    if (!user) return;
+  const handleLike = async (postId: string, liked: boolean) => {
+  if (!user) return;
 
-    try {
-      await axios.put(`http://localhost:5000/posts/${postId}/like`, {
-        userId: user.id,
-      });
-      fetchPosts(); // recargar con likes actualizados
-    } catch (err) {
-      console.error('Error al dar like:', err);
-      alert('No se pudo dar like');
+  try {
+    if (liked) {
+      await axios.patch(`http://localhost:5000/posts/${postId}/unlike`, { userId: user.id });
+    } 
+    else {
+      await axios.patch(`http://localhost:5000/posts/${postId}/like`, { userId: user.id });
     }
-  };
+    fetchPosts();
+  } catch (err) {
+    console.error('Error al dar/quitar like:', err);
+    alert('No se pudo actualizar el like');
+  }
+};
 
   return (
     <div>
@@ -91,15 +98,27 @@ export default function Posts() {
 
       <hr />
 
-      {posts.map((post) => (
-        <div key={post._id} style={{ border: '1px solid #ccc', padding: '10px', marginTop: '10px' }}>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-          <p><strong>Autor:</strong> {post.author}</p>
-          <p><strong>Likes:</strong> {post.likes.length}</p>
-          <button onClick={() => handleLike(post._id)}>👍 Like</button>
-        </div>
-      ))}
+    {posts.map((post) => {
+        const liked = user && post.likes.some(
+        (like) => typeof like === 'string' ? like === user.id: like._id === user.id);  
+    return (
+    <div key={post._id} style={{ border: '1px solid #ccc', padding: '10px', marginTop: '10px' }}>
+      <h3>{post.title}</h3>
+      <p>{post.content}</p>
+      <p><strong>Autor:</strong> {post.author?.name || post.author}</p>
+      <p><strong>Likes:</strong> {post.likes.length}</p>
+      <button onClick={() => handleLike(post._id, liked)}>
+        {liked ? '👎 Dislike' : '👍 Like'}
+      </button>
+      <button
+              onClick={() => navigate(`/posts/${post._id}`)}
+              style={{ marginLeft: '10px' }}
+            >
+              Editar
+            </button>
+    </div>
+  );
+})}
     </div>
   );
 }
